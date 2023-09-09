@@ -51,7 +51,7 @@ const Restaurants = () => {
 
     const apicall = async ()=>{
         try {
-            // const response = await axios.get('https://tripadvisor16.p.rapidapi.com/api/v1/restaurant/searchRestaurants',options);
+            const response = await axios.get('https://tripadvisor16.p.rapidapi.com/api/v1/restaurant/searchRestaurants',options);
             console.log(response.data.data.data);
             setPlaces(response.data.data.data);
            
