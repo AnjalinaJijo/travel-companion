@@ -18,7 +18,7 @@
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCisBohKqkmJ3qn17hVKumjlUSRYZ31_nY&libraries=places&callback=initMap" async></script>
+    <script src=`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_travelAdvisorAPiKey}&libraries=places&callback=initMap` async></script>
     <title>Travel Companion</title>
   </head>
   <body>
