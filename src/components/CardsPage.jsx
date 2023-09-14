@@ -1,95 +1,78 @@
-import React from 'react'
-import { styled } from '@mui/material/styles';
-import { Box,Typography, Paper, Link } from '@mui/material';
+import { useDispatch,useSelector} from 'react-redux';
+import { useState } from 'react'
+import { useNavigate,Link ,useParams} from "react-router-dom";
+import { Box,Typography,Tabs,Tab,AppBar } from '@mui/material';
+
+// import { setSelectedTab } from '../features/Place/placeSlice';
+
+import Plan from './Plan';
+import Hotels from './Hotels';
+import Restaurants from './Restaurant';
+import Attractions from './Attractions';
+import TripApi from './Travel/TripApi'
 
 const CardsPage = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+    let { page } = useParams();
+
+    const tabNameToIndex = {
+        0: "Plan",
+        1: "Restaurants",
+        2: "Hotels",
+        3: "Attractions"
+      }
+    
+      const indexToTabName = {
+        Plan: 0,
+        Restaurants: 1,
+        Hotels: 2,
+        Attractions :3
+      };
+
+      const [selectedTab,setSelectedTab] = useState(indexToTabName[page])
+
+      const handleChange = (event, newValue) => {
+        navigate(`/Home/${tabNameToIndex[newValue]}`);
+       
+          setSelectedTab(newValue)
+      };
+  
   return (
-    <Box sx={{mt:'65vh',mx:'10px'}}>
-    <Typography variant="h4" component="h4" sx={{ mt:'120px',display:'flex',justifyContent:'center',alignItems:'center',flexGrow: 1,zIndex:5,fontWeight:'100px',color:'#4E6366'}}>
-       LETS NOT MISS ANYTHING
-    </Typography>
+    <Box>
+      <TripApi />
+            <AppBar position='static' sx={{display:'flex',backgroundColor:'#51B0DA',justifyContent:'space-between',py:'10px'}}>
+                
+                <Link to="/" style={{textDecoration: 'none',color:'white'}}>
+                <Typography variant="h4" component="h4" sx={{mx:'15px'}}>
+                    TravelCompanion
+                </Typography>
+                </Link>
 
-    <Box sx={{mt:'10vh',display:'flex',justifyContent:'space-evenly',alignItems:'center',mb:"70px"}}>
-    <Link href="/Restaurants" sx={{textDecoration: 'none'}}>
-    <PaperFood elevation={6}>
-        <Typography variant="h4" component="h4" sx={{mt:'45px', color:'white',zIndex:3}}>
-            FOOD
-        </Typography>
-    </PaperFood>
-    </Link>
- 
-    <Link href="/Attractions" sx={{textDecoration: 'none'}}>
-    <PaperAttractions elevation={6}>
-    <Typography variant="h4" component="h4" sx={{mt:'45px', color:'white',zIndex:3}}>
-        ATTRACTIONS
-     </Typography>
-    </PaperAttractions>
-    </Link>
-    {/* <Paper elevation={3} sx={{height:'350px',width:'300px',display:'flex',justifyContent:'center',alignItems:'center'}}>
-    <Typography variant="h6" component="h6" sx={{ color:'blue',display:'flex',justifyContent:'center',alignItems:'center',flexGrow: 1,zIndex:5}}>
-        Hotels
-     </Typography>
+                <Tabs
+                value={selectedTab}
+                onChange={handleChange}
+                centered
+                sx={{flexWrap: 'wrap'}}
+                
+              >
 
-    </Paper> */}
-    <Link href="/SeeMap" sx={{textDecoration: 'none'}}>
-    <PaperMap elevation={6}>
-    <Typography variant="h4" component="h4" sx={{mt:'45px', color:'white',zIndex:3}}>
-        SEE MAP
-     </Typography>
-    </PaperMap>
-    </Link>
+                <Tab label="Plan" sx={{color:'white',fontSize:{xs:'10px',sm:'15px',md:'20px',lg:'20px',xl:'20px'}}}/>
+                <Tab label="Restaurants" sx={{color:'white',fontSize:{xs:'10px',sm:'15px',md:'20px',lg:'20px',xl:'20px'}}}/>
+                <Tab label="Hotels" sx={{color:'white',fontSize:{xs:'10px',sm:'15px',md:'20px',lg:'20px',xl:'20px'}}}/>
+                <Tab label="Attractions" sx={{color:'white',fontSize:{xs:'10px',sm:'15px',md:'20px',lg:'20px',xl:'20px'}}}/>
+            </Tabs>
+            </AppBar>
 
-    </Box>
-    </Box>
+              {selectedTab ===0 && <Plan />}
+              {selectedTab ===1 && <Restaurants />}
+              {selectedTab ===2 && <Hotels />}
+              {selectedTab ===3 && <Attractions />}
+        </Box>
   )
 }
-
-
-
-
-const PaperFood= styled (Paper)(()=>({
-    backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.1),rgba(0,0,0,0.2)),url(./images/food1.jpg) ',
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    height:'350px',
-    width:'300px',
-    zIndex:-1,
-    variant:'outlined',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'top',
-    borderRadius:'5%'
-}))
-
-const PaperAttractions= styled (Paper)(()=>({
-    backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.1),rgba(0,0,0,0.2)),url(./images/attraction.jpg) ',
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    height:'350px',
-    width:'300px',
-    zIndex:-1,
-    variant:'outlined',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'top',
-    borderRadius:'5%'
-}))
-const PaperMap= styled (Paper)(()=>({
-    backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.1),rgba(0,0,0,0.2)),url(./images/map.jpg) ',
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    height:'350px',
-    width:'300px',
-    zIndex:-1,
-    variant:'outlined',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'top',
-    borderRadius:'5%'
-}))
 
 export default CardsPage
 

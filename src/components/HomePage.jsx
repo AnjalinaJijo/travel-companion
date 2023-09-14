@@ -1,102 +1,88 @@
-import React,{ useState,useEffect } from 'react'
-import { styled } from '@mui/material/styles';
-import { Box,Typography,Toolbar, Button, Paper, Link,TextField,InputAdornment,Container } from '@mui/material';
-import CardsPage from './CardsPage';
-import SearchIcon from "@mui/icons-material/Search";
-import HelpIcon from '@mui/icons-material/Help';
-import dateFormat from "dateformat";
+import React,{useEffect } from 'react'
+import {useNavigate,Link} from "react-router-dom";
 
-import List from './List';
+
+import { useDispatch,useSelector} from 'react-redux';
+import { setRegion } from '../features/Place/placeSlice';
+
+import { styled } from '@mui/material/styles';
+import { Card,Box,Typography,Toolbar, Button, Paper,TextField,InputAdornment,Container } from '@mui/material';
+// import dateFormat from "dateformat";
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import {hotel} from './api/hotel'
 
 
 const HomePage = () => {
+ const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [region, setRegion] = useState("");
-  const [start, setStart] =  useState(new Date().toLocaleDateString('fr-FR'));
-  const [end, setEnd] =  useState(new Date().toLocaleDateString('fr-FR'));
-  const [isClicked, setIsClicked] =  useState(false);
+  const dispatch = useDispatch();
+
+  const region = useSelector((state) => state.place.value.region);
+  const checkIn = useSelector((state) => state.place.value.checkIn);
+  const checkOut = useSelector((state) => state.place.value.checkOut);
+  const isClicked = useSelector((state) => state.place.value.isClicked);
   
   const handleChange = (event) => {
-    setRegion(event.target.value);
+    dispatch(
+      setRegion({
+        region:event.target.value
+      })
+    )
+    // setRegion(event.target.value);
     console.log(region)
   };
 
   const handleClick = () =>{
-    setIsClicked(true)
-    console.log(region)
-
-    // try {
-    //   const response = await axios.get("https://tripadvisor16.p.rapidapi.com/api/v1/hotels/searchLocation",options);
-    //   console.log(response.data);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    navigate('/Home')
   }
 
-  useEffect(()=>{
-    const res = hotel
-console.log(start)
-console.log(end)
-
-    
-  },[region,start,end])
 
   return (
-    <>
-    {isClicked ?
-     (
-      <List region={region}
-       start={start}
-       end={end}/>
-     )
-    
-    :( <Box>
           <Background>
-            <Box>
+            <Box sx={{display:'flex',width:'100vw'}}>
             <Toolbar sx={{zIndex:3 ,color:'white',mt:'30px'}}>
-            <Typography variant="h3" component="h3" sx={{ flexGrow: 1 }}>
+            <Typography variant="h3" component="h3" sx={{ typography: { sm: 'h3', xs: 'h4',md:'h3',lg:'h3' },flexGrow: 1 }}>
                   TravelCompanion
             </Typography>
 
-            <Link href="/Restaurants" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
+            <Box sx={{display:"flex",justifyContent:'space-evenly',alignItems:'center'}}>
+            <Box sx={{display: { xs: 'none', md: 'none', lg: 'inline' }}}>
+              <Toolbar>
+            <Link to="/Home/Restaurants" style={{ color:'white', flexGrow: 1,textDecoration: 'none',marginLeft:'60%',marginRight:'10%'}}>
             <Typography variant="h6" component="h6" >
                   Restaurants
             </Typography>
             </Link>
-
-            {/* <Typography variant="h6" component="h6" sx={{ flexGrow: 1, mr:'17px' }}>
+            <Link to="Home/Hotels" style={{ color:'white', flexGrow: 1,textDecoration: 'none',marginRight:'10%'}}>
+            <Typography variant="h6" component="h6">
                   Hotels
-            </Typography> */}
-            <Link href="/Attractions" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
-            <Typography variant="h6" component="h6" sx={{ flexGrow: 1, mr:'17px' }}>
+            </Typography> 
+            </Link>
+
+         
+            <Link to="Home/Attractions" style={{ color:'white', flexGrow: 1,textDecoration: 'none',marginRight:'10%'}}>
+            <Typography variant="h6" component="h6">
                   Attractions
               </Typography>
               </Link>
-
-
-              <Link href="/SeeMap" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
-              <Typography variant="h6" component="h6" sx={{ flexGrow: 1,mr:'27px' }}>
-                  see Map
-              </Typography>
-              </Link>
-
-              <Button variant="outlined" sx={{color:"#5AB9C2",borderColor:'#5AB9C2', mr:'10px'}}>LOGIN</Button>
-              <Button variant="contained" sx={{mr:'20px',backgroundColor:'#51B0DA'}}>SIGNUP</Button>
+             
+              <Button variant="outlined" sx={{color:"#5AB9C2",borderColor:'#5AB9C2',mr:'5%'}}>LOGIN</Button>
+              <Button variant="contained" sx={{backgroundColor:'#51B0DA',mr:'5%',float:'left'}}>SIGNUP</Button>
               </Toolbar>
               </Box>
+              </Box>
+              </Toolbar>
+              </Box>
+             
               <Box sx={{color:'white',zIndex:5,display:'flex',flexDirection:"column",justifyContent:'center',alignItems:'center'}}>
-              <Typography variant="h3" component="h3" sx={{ mt:'90px',display:'flex',justifyContent:'center',alignItems:'center',flexGrow: 1,zIndex:5,fontWeight:'100px'}}>
+              <Typography variant="h3" component="h3" sx={{ typography: { sm: 'h4', xs: 'h5',md:'h3',lg:'h3' },mt:'90px',flexGrow: 1,zIndex:5,fontWeight:'100px',ml:'3%'}}>
                   YOUR PERFECT TRAVEL COMPANION
               </Typography>
-              <Typography variant="h6" component="h6" sx={{ display:'flex',justifyContent:'center',alignItems:'center',flexGrow: 1,zIndex:5}}>
+              <Typography variant="h6" component="h6" sx={{ typography: { sm: 'h5', xs: 'h6',md:'h6',lg:'h6' },zIndex:5,ml:'3%'}}>
                   Find Best Food, Stay and sites near you or anywhere in the globe...
               </Typography>
 
@@ -104,18 +90,13 @@ console.log(end)
             <TextField
               id="search"
               type="search"
-              // label="Where would you like to go"
               value={region}
-              sx={{ width: 650,backgroundColor:'white',borderRadius:'5%'}}
-              // InputLabelProps={{shrink: shrink}}
+              sx={{ width: '80%',backgroundColor:'white',borderRadius:'5%'}}
               onChange={handleChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {/* <SearchIcon /> */}
-                    {/* <Link href="/List" state={{ region: {region} }}> */}
                     <Button onClick={handleClick} variant="contained" sx={{backgroundColor:'#51B0DA'}}>Find Places</Button>
-                    {/* </Link> */}
                   </InputAdornment>
                 ),
               }}
@@ -123,49 +104,17 @@ console.log(end)
 
           </Container>
         <Box sx={{mt:'10px' ,display:'flex',justifyContent:'center',alignItems:'center',zIndex:5 }}>
-        
-        <Box sx={{mr:'20px'}}>
-        <DemoItem label="Start Date">
-          <LocalizationProvider dateAdapter={AdapterDayjs} >
-            <DatePicker
-            onChange={(date) => {
-              const d = new Date(date).toLocaleDateString('fr-FR');
-              setStart(d);
-            }}
-            sx={{backgroundColor:"white"} }/>
-          </LocalizationProvider>
-          </DemoItem>
-          </Box>
-          
-          <DemoItem label="End Date">
-          <LocalizationProvider dateAdapter={AdapterDayjs} >
-            <DatePicker
-            onChange={(date) => {
-              const d = new Date(date).toLocaleDateString('fr-FR');
-              setEnd(d);
-            }}
-            sx={{backgroundColor:"white"}}/>
-          </LocalizationProvider>
-          </DemoItem>
           </Box>
           </Box>  
-              {/* <Cloud /> */}
-              <CardsPage />
           </Background>
-
-        
-
-          </Box>   )
-}
-</>
   )
 }
 
 const imageURL = './images/beach.jpg';
 const Background = styled("div")({
     position: "absolute",
-    width: "100%",
-    height: "100%",
+    width: "100vw",
+    height: "100vh",
     backgroundImage: `url(${imageURL})`,
     backgroundPosition: "center",
     backgroundSize: "cover",
@@ -174,7 +123,6 @@ const Background = styled("div")({
     zIndex:-1,
 
       "&::before" :{
-      // backgroundColor:'rgb(0,0,0,0.5)',
       background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3),rgba(0,0,0,0.2))',
       content: "''",
       display: 'block',
@@ -184,42 +132,6 @@ const Background = styled("div")({
     }
 
   });
-
-  const Cloud = styled("div")({
-    position:'absolute',
-    background: 'linear-gradient(to bottom, rgba(239,238,237,0.5),rgba(224,223,221,0.2),rgba(255,255,255, 0.3)',
-    marginTop:'70vh',
-    // backgroundColor:"#ECEFF1",
-    width: '100vw',
-	  height: '100px',
-	  background: 'white',
-	  // margin: '60px auto',
-	  borderRadius: '50%',
-    // boxShadow:
-		// '40px 20px 0 -20px white,40px 25px 10px -20px gray,-120px 20px 0 5px white,-120px 25px 18px 2px gray,-140px -20px 0 10px white,-140px -15px 18px 10px gray'
-    "&::before":{
-      width:'100px',
-      height:'100px',
-      borderRadius:'50px',
-      background: 'linear-gradient(to bottom, rgba(239,238,237,0.5),rgba(224,223,221,0.2),rgba(255,255,255, 0.3)',
-      top:'-40px',
-      left:'50px',
-      boxShadow: '0 0 10px white',
-
-      "&::before":{
-        width:'100px',
-        height:'100px',
-        borderRadius:'50px',
-        background: 'linear-gradient(to bottom, rgba(239,238,237,0.5),rgba(224,223,221,0.2),rgba(255,255,255, 0.3)',
-        top:'-40px',
-        left:'50px',
-        boxShadow: '0 0 10px white'
-      }
-
-
-
-    }
-  })
 
 
 

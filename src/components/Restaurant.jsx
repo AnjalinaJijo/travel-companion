@@ -1,174 +1,232 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { Link } from "react-router-dom";
 
-import { styled } from '@mui/material/styles';
+import { useDispatch,useSelector} from 'react-redux';
+import {
+  setRegion,
+  setPlaces} from '../features/Place/placeSlice';
+
+
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
-import { AppBar,Grid,Rating,Card,CardMedia,Box,Typography,Toolbar, Button, Paper, Link,TextField,InputAdornment,Container, CardContent } from '@mui/material';
+import { Grid,Rating,Card,CardMedia,Box,Typography,Toolbar, Button, TextField, CardContent } from '@mui/material';
 
 import axios from 'axios';
 
-
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TripApi from './Travel/TripApi';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 const Restaurants = () => {
+  const [cuisine, setCuisine] = React.useState('');
+  // const [RegionChange, setRegionChange] = React.useState(false);
 
-  // console.log(geoId)
+  const handleCuisine = (event) => {
+    setCuisine(event.target.value);
+  };
+  const [rating, setRating] = React.useState(0);
+  const [searchValue, setSearchValue] = React.useState('');
 
-    const [places,setPlaces] = useState([]);
-    // const [image,setImage] = useState('')
-    const [urlTemplate,setUrlTemplate] = useState('')
-    const [adults,setAdults] = useState('')
-    const [rooms,setRooms] = useState('')
+  const handleRating = (event) => {
+    setRating(event.target.value);
+    
+  };
+
+  const dispatch = useDispatch();
+
+  const region = useSelector((state) => state.place.value.region);
+  const places= useSelector((state) => state.place.value.places);
+  const lat= useSelector((state) => state.place.value.lat);
+  const long= useSelector((state) => state.place.value.long);
+  const isLoading= useSelector((state) => state.place.value.isLoading);
 
     const options = {
      
         params: {    
-          locationId: '35805',
-          page: '1'
-              // priceMin: '100'
+          latitude:  lat,
+          longitude: long,
+          // latitude: '12.91285',
+          // longitude: '100.87808',
+          limit: '30',
+          currency: 'USD',
+          distance: '10',
+          open_now: 'false',
+          lunit: 'km',
+          lang: 'en_US',
+          min_rating: '3',
+          combined_food: cuisine,
         },
         headers: {
-          'X-RapidAPI-Key': process.env.REACT_APP_TripadvisorApiKey,
-          'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
+          'X-RapidAPI-Key':  process.env.REACT_APP_travelAdvisorAPiKey,
+          'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
         }
       };
 
-    useEffect(()=>{
+      const handleRegion = (event) => {
+        setSearchValue(event.target.value)
+       
+      };
+
+     
+
+      useEffect(()=>{
+          apicall()
+      },[])
+
+      const HandleSearch = ()=>{
+        // dispatch(setRegion({
+        //   region: searchValue
+        // }))
+        // setRegionChange(true) 
         apicall()
-    },[])
+      }
 
-
-    // const setTemplateForPlace = (place) => {
-    //   if (place.cardPhotos && place.cardPhotos.length > 0) {
-    //     // Set the urlTemplate here, but only if cardPhotos exist and have elements
-    //     const modifiedUrl = place.cardPhotos[0].sizes.urlTemplate
-    //       .replace('{width}', '200px')
-    //       .replace('{height}', '300px');
-    //     setUrlTemplate(modifiedUrl);
-    //   }
-    // };
-
-
+      // useEffect(()=>{
+      //   apicall()
+      // },[RegionChange])
+    
     const apicall = async ()=>{
         try {
-            const response = await axios.get('https://tripadvisor16.p.rapidapi.com/api/v1/restaurant/searchRestaurants',options);
-            console.log(response.data.data.data);
-            setPlaces(response.data.data.data);
-           
-            // console.log(response.data.data.data[0].cardPhotos[0].sizes.urlTemplate.replace('{width}', '500').replace('{height}', '600'))
-            // seturlTemplate(response.data.data.data[1])
-            // console.log(urlTemplate)
-            // Assuming cardPhotos is within the badge object
-
-            // setImage(urlTemplate
-            //     )
-           
+            const response = await axios.get('https://travel-advisor.p.rapidapi.com/restaurants/list-by-latlng',options);
+            console.log(response.data.data);
+            dispatch(
+              setPlaces({
+                places:response.data.data
+              })
+            ) 
         } catch (error) {
             console.error(error);
         }
     }
 
   return (
-    <Box>
+    <>
+    {isLoading? (
+      <Box sx={{width:'100%'}} >
+        <LinearProgress />
+        </Box>
+    ):
+    (<Box>
+      {/* {RegionChange && <TripApi />} */}
+        <Toolbar sx={{display:'flex',justifyContent:'space-evenly',zIndex:3 ,color:'white',mt:'30px'}}>
+        <TextField
+        id="search"
+        type="search"
+        label={region}
+        value={searchValue}
+        sx={{ width: '200px'}}
+        onChange={handleRegion}
+        />
 
-<AppBar position="static" sx={{backgroundColor:'#51B0DA',pb:'15px'}}>
-<Box>
-            <Toolbar sx={{zIndex:3 ,color:'white',mt:'30px'}}>
-            <Typography variant="h3" component="h3" sx={{ flexGrow: 1 }}>
-                  TravelCompanion
-            </Typography>
-
-            <Link href="/Restaurants" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
-            <Typography variant="h6" component="h6" >
-                  Restaurants
-            </Typography>
-            </Link>
-
-            {/* <Typography variant="h6" component="h6" sx={{ flexGrow: 1, mr:'17px' }}>
-                  Restaurants
-            </Typography> */}
-            <Link href="/Attractions" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
-            <Typography variant="h6" component="h6" sx={{ flexGrow: 1, mr:'17px' }}>
-                  Attractions
-              </Typography>
-              </Link>
+        <FormControl sx={{width:'100px'}}>
+        <InputLabel id="demo-simple-select-label">Rating</InputLabel>
+        <Select
+          value={rating}
+          label="Rating"
+          onChange={handleRating}
+        >
+          <MenuItem value={0}>0</MenuItem>
+          <MenuItem value={1}>1</MenuItem>
+          <MenuItem value={2}>2</MenuItem>
+          <MenuItem value={3}>3</MenuItem>
+          <MenuItem value={4}>4</MenuItem>
+          <MenuItem value={5}>5</MenuItem>
+        </Select>
+        </FormControl>
 
 
-              <Link href="/SeeMap" sx={{ color:'white', flexGrow: 1, ml:'27px',textDecoration: 'none'}}>
-              <Typography variant="h6" component="h6" sx={{ flexGrow: 1,mr:'27px' }}>
-                  see Map
-              </Typography>
-              </Link>
+        <FormControl sx={{width:'100px'}}>
+        <InputLabel id="demo-simple-select-label">Cuisine</InputLabel>
+        <Select
+          value={cuisine}
+          label="Cuisine"
+          onChange={handleCuisine}
+        >
+          <MenuItem value={1}>European</MenuItem>
+          <MenuItem value={2}>Italian</MenuItem>
+          <MenuItem value={3}>Vietnamese</MenuItem>
+          <MenuItem value={4}>Seafood</MenuItem>
+          <MenuItem value={5}>International</MenuItem>
 
-              <Button variant="outlined" sx={{color:"white",borderColor:'white', mr:'10px'}}>LOGIN</Button>
-              <Button variant="contained" sx={{mr:'20px',backgroundColor:'white',color:'#51B0DA'}}>SIGNUP</Button>
-              </Toolbar>
-              </Box>
-</AppBar>
-    {places?.map((place,id)=>(
+        </Select>
+        </FormControl>
 
-      <Grid container spacing={5} sx={{mt:'10px',padding:'10px',display:'flex',justifyContent:'center',align_items:'center'}} >
 
-        <Card variant="outlined"  elevation={6} sx={{border: "1px solid #51B0DA" ,mb:'10px',mt:'10px',padding:'10px',width:'70vw',height:'600',display:'flex',borderRadius:'3%'}}>
-                    {place.heroImgUrl && place.heroImgUrl.length > 0 ? (
-                  <CardMedia
-                    style={{ height: '300px', width: '350px',borderRadius:'3%'}}
-                    image={place.heroImgUrl}
-                    title={place.name}
-                  />
-                ) : (null)}
- 
-                     
-                      <CardContent sx={{ml:'10px',display:'flex',flexDirection:'column',justifyContent:'center',align_items:'center'}}>
-                        <Typography variant="h5" sx={{fontWeight:'bold'}}>
-                            {place.name}
+        <Button variant="contained" onClick={HandleSearch}
+        sx={{mt:'10px',backgroundColor:'#51B0DA',
+        width:'100px',height:'50px'}}>
+        Search
+        </Button>
+        </Toolbar>
+
+            {places?.filter((place)=>((place.name && place.rating) >0 &&  Number(place.rating)>=rating)).map((place,id)=>(
+
+            <Grid container spacing={5} sx={{mt:'10px',padding:'10px',display:'flex',justifyContent:'center',align_items:'center'}} >
+
+            <Card variant="outlined"  elevation={6} sx={{border: "1px solid #51B0DA" ,mb:'10px',mt:'10px',padding:'10px',width:'80vw',height:'600',display:'flex',borderRadius:'3%'}}>
+              <CardMedia
+                          style={{ height: '600', width: '60%',borderRadius:'3%'}}
+                          image={place?.photo?.images?.large?.url ? place?.photo?.images?.large?.url:'https://www.foodserviceandhospitality.com/wp-content/uploads/2016/09/Restaurant-Placeholder-001.jpg' }
+                          title={place.name}
+                />
+
+                          
+                  <CardContent sx={{ml:'3%',display:'flex',flexDirection:'column',justifyContent:'center',align_items:'center'}}>
+                      <Typography variant="h5" sx={{fontWeight:'bold'}}>
+                        {place.name}
+                      </Typography>
+
+                      <Rating name="read-only" sx={{mb:'10px'}} value={Number(place.rating)} precision={0.5} readOnly />
+
+                      <Typography gutterBottom variant="subtitle1" >
+                           {place.location_string ? place.location_string:null }
                         </Typography>
 
-                        <Rating name="read-only" sx={{mb:'10px'}} value={Number(place.averageRating)} precision={0.5} readOnly />
+                              <Typography variant="subtitle1" >
+                                  {place.ranking}
+                              </Typography>
+                              
+                                  { place.cuisine ? (place.cuisine.map((cus)=>(
+                                    <Typography variant="subtitle1"  sx={{display:'flex',flexDirection:'row',alignItems:'space-evenly'}}>
+                                      {cus.name ? cus.name : null}
+                                    </Typography>
+                                  ))):null}
 
-                        <Typography variant="h6" >
-                            {place.parentGeoName}
-                        </Typography>
-                        <Typography  variant="subtitle1" >
-                            {place.currentOpenStatusText ? place.currentOpenStatusText:null }
-                        </Typography>
-                        <Typography variant="subtitle1" >
-                            {place.priceForDisplay }
-                        </Typography>
 
-                        <Typography gutterBottom variant="subtitle1" >
-                            {place.priceDetails?place.priceDetails:null }
-                        </Typography>
-                        <Typography gutterBottom variant="subtitle1" >
-                            {place.establishmentTypeAndCuisineTags?place.establishmentTypeAndCuisineTags:null }
-                        </Typography>
+                              <Typography variant="subtitle1" >
+                                  {place.open_now_text}
+                              </Typography> 
 
-                        <Typography gutterBottom variant="subtitle1" >
-                            {place.primaryInfo?place.primaryInfo:null}
-                        </Typography>
+                            {place.website?(
+                            <Link href={place.website} sx={{textDecoration: 'none',display:'flex'}}>
+                                  <MenuBookIcon/>
+                                  <Typography variant="subtitle1" >
+                                      See WebSite
+                                  </Typography>
+                            </Link>):(null)}
 
-                       {place.menuUrl?(
-                       <Link href={place.menuUrl} sx={{textDecoration: 'none',display:'flex'}}>
-                            <MenuBookIcon/>
+
                             <Typography variant="subtitle1" >
-                                See Menu
-                            </Typography>
-                       </Link>):(null)}
+                                    {place.price}
+                                  </Typography>
 
-                      <Box sx={{display:'flex',justifyContent:'center',align_items:'center'}}>
-                        <Button variant="contained" sx={{mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
-                      </Box>
-                        </CardContent>
-                        
-                        
-
-
-        </Card>
-
-         </Grid>
-
-    ))} 
-    </Box>
+                        {place.booking?.url ?(
+                          <Link href={place.booking?.url} sx={{textDecoration: 'none',display:'flex'}}>
+                          <Box sx={{display:'flex',justifyContent:'center',align_items:'center'}}>
+                            <Button variant="contained" sx={{mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
+                          </Box>
+                      </Link>
+                        ): null}                       
+                   </CardContent>
+              </Card>
+              </Grid>
+            ))} 
+  </Box>)}
+    </>
   )
 }
 
