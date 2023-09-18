@@ -57,11 +57,27 @@ const Hotels = () => {
   const isLoading= useSelector((state) => state.place.value.isLoading);
 
     const options = {
+      // params: {
+      //   latitude: '40.7127281',
+      //   longitude: '-74.0060152',
+      //   lang: 'en_US',
+      //   hotel_class: '1,2,3',
+      //   limit: '30',
+      //   adults: '1',
+      //   amenities: 'beach,bar_lounge,airport_transportation',
+      //   rooms: '1',
+      //   child_rm_ages: '7,10',
+      //   currency: 'USD',
+      //   zff: '4,6',
+      //   subcategory: 'hotel,bb,specialty',
+      //   nights: '2',
+      //   distance: '100'
+      // },
         params: {
           latitude: lat,
           longitude:long,
-          // latitude: "43.20000000",
-          // longitude: "-80.38333000",
+        // latitude: '40.7127281',
+        // longitude: '-74.0060152',
           lang: 'en_US',
           hotel_class: '1,2,3',
           limit: '30',
@@ -77,7 +93,6 @@ const Hotels = () => {
           'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
         },
       };
-
       const handleRegion = (event) => {
         event.preventDefault()
         // setSearchValue(event.target.value)
@@ -90,20 +105,24 @@ const Hotels = () => {
         // apicall()
       };
 
+      useEffect(()=>{
+        console.log(lat)
+        console.log(long)
+        apicall()
+       },[])
+
       const HandleSearch = (event)=>{
         event.preventDefault()
         getlatlong()
       //   setTimeout(() => {
       //     apicall()
       //  }, 1000);
+      console.log(lat)
+        console.log(long)
         apicall()
       }
 
-
-    
-      useEffect(()=>{
-        apicall()
-    },[])
+  
 
     const apicall = async ()=>{
         try {
@@ -140,7 +159,9 @@ const Hotels = () => {
             // console.log(response.data)
             // console.log(response.data[0].latitude)
             const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${region}&key=${process.env.REACT_APP_OpenCageGeoCoder}`);  
-            const data=response.data.results[0].geometry 
+           
+            const data=response.data.results[0].geometry
+            console.log(response.data.results[0].geometry) 
             dispatch(
               setLat({
                 // lat : response.data[1].latitude

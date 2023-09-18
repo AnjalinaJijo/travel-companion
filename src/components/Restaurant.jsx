@@ -83,6 +83,8 @@ const Restaurants = () => {
       };
 
       useEffect(()=>{
+        console.log(lat)
+        console.log(long)
         apicall()
       },[])
 
