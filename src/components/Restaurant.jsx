@@ -270,7 +270,7 @@ const Restaurants = () => {
                         )} 
 
                         {place.booking?.url ?(
-                          <Link to={place.booking?.url} style={{textDecoration: 'none',display:'flex'}}>
+                          <Link to={place.booking?.url} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                           <Box sx={{display:'flex',justifyContent:'center',align_items:'center'}}>
                             <Button variant="contained" sx={{textDecoration:'none',mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
                           </Box>
