@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 
 import { useDispatch,useSelector} from 'react-redux';
-import {setPlaces} from '../features/Place/placeSlice';
+import {setPlaces,
+  setLat,
+  setRegion,
+  setLong,} from '../features/Place/placeSlice';
 
 import { styled } from '@mui/material/styles';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -63,23 +66,36 @@ const Attractions = () => {
         apicall()
     },[])
  
-    // const handleRegion = (event) => {
-    //   dispatch({
-    //     region: event.target.value
-    //   })
-    //   setRegionChange(true)
-    // };
     const handleRegion = (event) => {
-      setSearchValue(event.target.value)
+      event.preventDefault()
+      // setSearchValue(event.target.value)
+      dispatch(
+        setRegion({
+          region: event.target.value
+        })  
+      )
+      // setRegionChange(true) 
+      // apicall()
     };
+    // const handleRegion = (event) => {
+    //   setSearchValue(event.target.value)
+    // };
   
+    const HandleSearch = (event)=>{
+      event.preventDefault()
+      getlatlong()
+    //   setTimeout(() => {
+    //     apicall()
+    //  }, 1000);
+      apicall()
+    }
 
     const apicall = async ()=>{
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/attractions/list-by-latlng',options);
             console.log(response.data.data);
             // console.log(response.data.data[1].photo.images.large.url);
-
+          
             dispatch(
               setPlaces({
                 places:response.data.data
@@ -90,6 +106,41 @@ const Attractions = () => {
             console.error(error);
         }
     }
+
+    const getlatlong = async()=>{
+      // const options = {
+      //     params: {
+      //       city: region
+      //     },
+      //     headers: {
+      //       'X-RapidAPI-Key': process.env.REACT_APP_GeoSourceApiKey,
+      //       'X-RapidAPI-Host': 'geosource-api.p.rapidapi.com'
+      //     }
+      //   };
+        try {
+            // const response = await axios.get("https://geosource-api.p.rapidapi.com/locationByCity.php",options);   
+            // console.log(response.data)
+            // console.log(response.data[0].latitude)
+            
+            const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${region}&key=${process.env.REACT_APP_OpenCageGeoCoder}`);   
+            const data=response.data.results[0].geometry
+        
+            dispatch(
+              setLat({
+                // lat : response.data[1].latitude
+                lat:data.lat
+              })
+            )
+            dispatch(
+              setLong({
+                // long : response.data[1].longitude
+                long:data.lng
+              })
+            )
+          } catch (error) {
+            console.error(error);
+          }
+  }
 
   return (
     <>
@@ -132,7 +183,7 @@ const Attractions = () => {
                     </FormControl>
    
  
-                <Button variant="contained" onClick={apicall}
+                <Button variant="contained" onClick={HandleSearch}
                 sx={{mt:'10px',backgroundColor:'#51B0DA',
                 width:'100px',height:'50px'}}>
                 Search
@@ -168,7 +219,7 @@ const Attractions = () => {
                                 {place.ranking}
                             </Typography>
     
-                           {place.web_url?(
+                           {place?.web_url ? (
                            <Link href={place.web_url} sx={{textDecoration: 'none',display:'flex'}}>
                                 <MenuBookIcon/>
                                 <Typography variant="subtitle1" >
@@ -181,7 +232,7 @@ const Attractions = () => {
                                 <Typography variant="subtitle1" >
                                     Write Review
                                 </Typography>
-                           </Link>)
+                           </Link>
     
     
                            <Typography variant="subtitle1" >

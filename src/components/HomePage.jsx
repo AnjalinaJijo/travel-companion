@@ -9,11 +9,11 @@ import { styled } from '@mui/material/styles';
 import { Card,Box,Typography,Toolbar, Button, Paper,TextField,InputAdornment,Container } from '@mui/material';
 // import dateFormat from "dateformat";
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+// import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 
 const HomePage = () => {
@@ -93,10 +93,11 @@ const HomePage = () => {
               value={region}
               sx={{ width: '80%',backgroundColor:'white',borderRadius:'5%'}}
               onChange={handleChange}
+              placeholder='Where do you wanna go eg:new york'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Button onClick={handleClick} variant="contained" sx={{backgroundColor:'#51B0DA'}}>Find Places</Button>
+                    <Button onClick={handleClick} variant="contained" sx={{backgroundColor:'#51B0DA'}}>Find Place</Button>
                   </InputAdornment>
                 ),
               }}

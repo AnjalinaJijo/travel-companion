@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 
 import { useDispatch,useSelector} from 'react-redux';
 import {
+  setLat,
+  setLong,
+  setIsLoading,
   setRegion,
   setPlaces} from '../features/Place/placeSlice';
 
@@ -17,24 +20,25 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import TripApi from './Travel/TripApi';
+// import TripApi from './Travel/TripApi';
 import LinearProgress from '@mui/material/LinearProgress';
 
 
 const Restaurants = () => {
   const [cuisine, setCuisine] = React.useState('');
-  // const [RegionChange, setRegionChange] = React.useState(false);
+  const [searchActive, setSearchActive] = React.useState(false);
 
   const handleCuisine = (event) => {
     setCuisine(event.target.value);
   };
   const [rating, setRating] = React.useState(0);
-  const [searchValue, setSearchValue] = React.useState('');
+  // const [searchValue, setSearchValue] = React.useState(false);
 
   const handleRating = (event) => {
-    setRating(event.target.value);
-    
+    setRating(event.target.value);  
   };
+
+
 
   const dispatch = useDispatch();
 
@@ -67,32 +71,42 @@ const Restaurants = () => {
       };
 
       const handleRegion = (event) => {
-        setSearchValue(event.target.value)
-       
+        event.preventDefault()
+        // setSearchValue(event.target.value)
+        dispatch(
+          setRegion({
+            region: event.target.value
+          })  
+        )
+        // setRegionChange(true) 
+        // apicall()
       };
 
-     
-
       useEffect(()=>{
-          apicall()
+        apicall()
       },[])
 
-      const HandleSearch = ()=>{
-        // dispatch(setRegion({
-        //   region: searchValue
-        // }))
-        // setRegionChange(true) 
+      
+
+      const HandleSearch = (event)=>{
+        event.preventDefault()
+        getlatlong()
+      //   setTimeout(() => {
+      //     apicall()
+      //  }, 1000);
         apicall()
       }
-
-      // useEffect(()=>{
-      //   apicall()
-      // },[RegionChange])
     
     const apicall = async ()=>{
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/restaurants/list-by-latlng',options);
             console.log(response.data.data);
+            dispatch(
+              setIsLoading({
+                isLoading:true
+              })
+            ) 
+
             dispatch(
               setPlaces({
                 places:response.data.data
@@ -102,6 +116,41 @@ const Restaurants = () => {
             console.error(error);
         }
     }
+
+    const getlatlong = async()=>{
+      // const options = {
+      //     params: {
+      //       city: region
+      //     },
+      //     headers: {
+      //       'X-RapidAPI-Key': process.env.REACT_APP_GeoSourceApiKey,
+      //       'X-RapidAPI-Host': 'geosource-api.p.rapidapi.com'
+      //     }
+      //   };
+        try {
+            // const response = await axios.get("https://geosource-api.p.rapidapi.com/locationByCity.php",options);   
+            const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${region}&key=${process.env.REACT_APP_OpenCageGeoCoder}`);   
+            // console.log(response.data)
+            // console.log(response.data[0].latitude)
+            const data=response.data.results[0].geometry
+            console.log(response.data.results[0].geometry)
+        
+            dispatch(
+              setLat({
+                // lat : response.data[1].latitude
+                lat:data.lat
+              })
+            )
+            dispatch(
+              setLong({
+                // long : response.data[1].longitude
+                long:data.lng
+              })
+            )
+          } catch (error) {
+            console.error(error);
+          }
+  } 
 
   return (
     <>
@@ -117,7 +166,7 @@ const Restaurants = () => {
         id="search"
         type="search"
         label={region}
-        value={searchValue}
+        value={region}
         sx={{ width: '200px'}}
         onChange={handleRegion}
         />
@@ -201,10 +250,10 @@ const Restaurants = () => {
                                   {place.open_now_text}
                               </Typography> 
 
-                            {place.website?(
-                            <Link href={place.website} sx={{textDecoration: 'none',display:'flex'}}>
+                            {place.web_url?(
+                            <Link href={place.web_url} sx={{textDecoration: 'none',display:'flex'}}>
                                   <MenuBookIcon/>
-                                  <Typography variant="subtitle1" >
+                                  <Typography variant="subtitle1" sx={{textDecoration:'none'}}>
                                       See WebSite
                                   </Typography>
                             </Link>):(null)}
@@ -217,10 +266,14 @@ const Restaurants = () => {
                         {place.booking?.url ?(
                           <Link href={place.booking?.url} sx={{textDecoration: 'none',display:'flex'}}>
                           <Box sx={{display:'flex',justifyContent:'center',align_items:'center'}}>
-                            <Button variant="contained" sx={{mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
+                            <Button variant="contained" sx={{textDecoration:'none',mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
                           </Box>
                       </Link>
-                        ): null}                       
+                        ): null}
+
+                        {place.phone && (
+                          <Typography>{place.phone}</Typography>
+                        )}                       
                    </CardContent>
               </Card>
               </Grid>

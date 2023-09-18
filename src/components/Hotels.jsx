@@ -8,7 +8,10 @@ import Select from '@mui/material/Select';
 
 import { useDispatch,useSelector} from 'react-redux';
 import {
-  setPlaces} from '../features/Place/placeSlice';
+  setPlaces,
+  setRegion,
+  setLat,
+  setLong,} from '../features/Place/placeSlice';
 
 import { Grid,Rating,Card,CardMedia,Box,Typography,Toolbar, Button,TextField,InputAdornment,Container, CardContent } from '@mui/material';
 
@@ -75,16 +78,27 @@ const Hotels = () => {
         },
       };
 
-      // const handleRegion = (event) => {
-      //   dispatch({
-      //     region: event.target.value
-      //   })
-      //   setRegionChange(true)
-      // };
       const handleRegion = (event) => {
-        setSearchValue(event.target.value)
-       
+        event.preventDefault()
+        // setSearchValue(event.target.value)
+        dispatch(
+          setRegion({
+            region: event.target.value
+          })  
+        )
+        // setRegionChange(true) 
+        // apicall()
       };
+
+      const HandleSearch = (event)=>{
+        event.preventDefault()
+        getlatlong()
+      //   setTimeout(() => {
+      //     apicall()
+      //  }, 1000);
+        apicall()
+      }
+
 
     
       useEffect(()=>{
@@ -95,8 +109,9 @@ const Hotels = () => {
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/hotels/list-by-latlng',options);
             console.log(response.data);
+            
             // console.log(response.data.data[0].photo.images.large.url);
-
+            
             dispatch(
               setPlaces({
                 places:response.data.data
@@ -109,6 +124,39 @@ const Hotels = () => {
             console.error(error);
         }
     }
+
+    const getlatlong = async()=>{
+      // const options = {
+      //     params: {
+      //       city: region
+      //     },
+      //     headers: {
+      //       'X-RapidAPI-Key': process.env.REACT_APP_GeoSourceApiKey,
+      //       'X-RapidAPI-Host': 'geosource-api.p.rapidapi.com'
+      //     }
+      //   };
+        try {
+            // const response = await axios.get("https://geosource-api.p.rapidapi.com/locationByCity.php",options);   
+            // console.log(response.data)
+            // console.log(response.data[0].latitude)
+            const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${region}&key=${process.env.REACT_APP_OpenCageGeoCoder}`);  
+            const data=response.data.results[0].geometry 
+            dispatch(
+              setLat({
+                // lat : response.data[1].latitude
+                lat:data.lat
+              })
+            )
+            dispatch(
+              setLong({
+                // long : response.data[1].longitude
+                long:data.lng
+              })
+            )
+          } catch (error) {
+            console.error(error);
+          }
+  }
 
   return (
     <>
@@ -184,7 +232,7 @@ const Hotels = () => {
                   />
       
       
-                  <Button variant="contained" onClick={apicall}
+                  <Button variant="contained" onClick={HandleSearch}
                   sx={{mt:'10px',backgroundColor:'#51B0DA',
                   width:'100px',height:'50px'}}>
                   Search
