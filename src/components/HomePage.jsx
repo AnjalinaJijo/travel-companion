@@ -6,7 +6,7 @@ import { useDispatch,useSelector} from 'react-redux';
 import { setRegion } from '../features/Place/placeSlice';
 
 import { styled } from '@mui/material/styles';
-import { Card,Box,Typography,Toolbar, Button, Paper,TextField,InputAdornment,Container } from '@mui/material';
+import { Card,Box,Typography,Toolbar, Button, Paper,TextField,InputAdornment,Container, Hidden } from '@mui/material';
 // import dateFormat from "dateformat";
 
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -22,9 +22,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
 
   const region = useSelector((state) => state.place.value.region);
-  const checkIn = useSelector((state) => state.place.value.checkIn);
-  const checkOut = useSelector((state) => state.place.value.checkOut);
-  const isClicked = useSelector((state) => state.place.value.isClicked);
+  
   
   const handleChange = (event) => {
     dispatch(
@@ -33,7 +31,7 @@ const HomePage = () => {
       })
     )
     // setRegion(event.target.value);
-    console.log(region)
+    // console.log(region)
   };
 
   const handleClick = () =>{
@@ -91,7 +89,7 @@ const HomePage = () => {
               id="search"
               type="search"
               value={region}
-              sx={{ width: '80%',backgroundColor:'white',borderRadius:'5%'}}
+              sx={{ width: '100%',backgroundColor:'white',borderRadius:'5%'}}
               onChange={handleChange}
               placeholder='Where do you wanna go eg:new york'
               InputProps={{

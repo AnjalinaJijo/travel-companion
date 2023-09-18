@@ -27,7 +27,7 @@ const TripApi =()=>{
           // console.log(response.data)
           // console.log(response.data[0].latitude)
           const data=response.data.results[0].geometry
-          console.log(response.data.results[0].geometry)
+          // console.log(response.data.results[0].geometry)
       
           dispatch(
             setLat({

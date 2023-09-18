@@ -106,8 +106,8 @@ const Hotels = () => {
       };
 
       useEffect(()=>{
-        console.log(lat)
-        console.log(long)
+        // console.log(lat)
+        // console.log(long)
         apicall()
        },[])
 
@@ -117,8 +117,8 @@ const Hotels = () => {
       //   setTimeout(() => {
       //     apicall()
       //  }, 1000);
-      console.log(lat)
-        console.log(long)
+      // console.log(lat)
+      //   console.log(long)
         apicall()
       }
 
@@ -127,7 +127,7 @@ const Hotels = () => {
     const apicall = async ()=>{
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/hotels/list-by-latlng',options);
-            console.log(response.data);
+            // console.log(response.data);
             
             // console.log(response.data.data[0].photo.images.large.url);
             
@@ -161,7 +161,7 @@ const Hotels = () => {
             const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${region}&key=${process.env.REACT_APP_OpenCageGeoCoder}`);  
            
             const data=response.data.results[0].geometry
-            console.log(response.data.results[0].geometry) 
+            // console.log(response.data.results[0].geometry) 
             dispatch(
               setLat({
                 // lat : response.data[1].latitude

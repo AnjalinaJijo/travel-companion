@@ -26,7 +26,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 const Restaurants = () => {
   const [cuisine, setCuisine] = React.useState('');
-  const [searchActive, setSearchActive] = React.useState(false);
+  // const [searchActive, setSearchActive] = React.useState(false);
 
   const handleCuisine = (event) => {
     setCuisine(event.target.value);
@@ -102,7 +102,7 @@ const Restaurants = () => {
     const apicall = async ()=>{
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/restaurants/list-by-latlng',options);
-            console.log(response.data.data);
+            // console.log(response.data.data);
             dispatch(
               setIsLoading({
                 isLoading:true
@@ -135,7 +135,7 @@ const Restaurants = () => {
             // console.log(response.data)
             // console.log(response.data[0].latitude)
             const data=response.data.results[0].geometry
-            console.log(response.data.results[0].geometry)
+            // console.log(response.data.results[0].geometry)
         
             dispatch(
               setLat({
@@ -253,10 +253,10 @@ const Restaurants = () => {
                               </Typography> 
 
                             {place.web_url?(
-                            <Link href={place.web_url} sx={{textDecoration: 'none',display:'flex'}}>
+                            <Link to={place.web_url} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                   <MenuBookIcon/>
                                   <Typography variant="subtitle1" sx={{textDecoration:'none'}}>
-                                      See WebSite
+                                      See WebSite in TripAdvisor
                                   </Typography>
                             </Link>):(null)}
 
@@ -266,7 +266,7 @@ const Restaurants = () => {
                                   </Typography>
 
                         {place.booking?.url ?(
-                          <Link href={place.booking?.url} sx={{textDecoration: 'none',display:'flex'}}>
+                          <Link to={place.booking?.url} style={{textDecoration: 'none',display:'flex'}}>
                           <Box sx={{display:'flex',justifyContent:'center',align_items:'center'}}>
                             <Button variant="contained" sx={{textDecoration:'none',mt:'10px',backgroundColor:'#51B0DA',width:'200px',height:'50px'}}>Book Now</Button>
                           </Box>

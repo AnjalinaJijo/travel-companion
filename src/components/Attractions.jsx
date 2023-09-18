@@ -43,18 +43,17 @@ const Attractions = () => {
 
     const options = {
      
-        params: {    
+        params: {
+
           latitude:  lat,
           longitude: long,
           // latitude: '12.91285',
           // longitude: '100.87808',
           limit: '30',
           currency: 'USD',
-          distance: '2',
-          open_now: 'false',
           lunit: 'km',
           lang: 'en_US',
-          distance: '1000'
+          distance: '25'
         },
         headers: {
           'X-RapidAPI-Key': process.env.REACT_APP_travelAdvisorAPiKey,
@@ -93,8 +92,8 @@ const Attractions = () => {
     const apicall = async ()=>{
         try {
             const response = await axios.get('https://travel-advisor.p.rapidapi.com/attractions/list-by-latlng',options);
-            console.log(response.data.data);
-            // console.log(response.data.data[1].photo.images.large.url);
+            // console.log(response.data.data);
+            // console.log(response.data.data[1].web_url);
           
             dispatch(
               setPlaces({
@@ -220,14 +219,14 @@ const Attractions = () => {
                             </Typography>
     
                            {place?.web_url ? (
-                           <Link href={place.web_url} sx={{textDecoration: 'none',display:'flex'}}>
+                           <Link to={place.web_url} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                 <MenuBookIcon/>
                                 <Typography variant="subtitle1" >
                                     See WebSite
                                 </Typography>
                            </Link>):(null)}
     
-                           <Link href={place.write_review} sx={{textDecoration: 'none',display:'flex'}}>
+                           <Link to={place.write_review} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                 <MenuBookIcon/>
                                 <Typography variant="subtitle1" >
                                     Write Review
