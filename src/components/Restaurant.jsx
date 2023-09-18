@@ -256,7 +256,7 @@ const Restaurants = () => {
                             <Link to={place.web_url} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                   <MenuBookIcon/>
                                   <Typography variant="subtitle1" sx={{textDecoration:'none'}}>
-                                      See WebSite in TripAdvisor
+                                      Check out the website on TripAdvisor
                                   </Typography>
                             </Link>):(null)}
 
@@ -264,6 +264,10 @@ const Restaurants = () => {
                             <Typography variant="subtitle1" >
                                     {place.price}
                                   </Typography>
+
+                          {place.phone && (
+                          <Typography>{place.phone}</Typography>
+                        )} 
 
                         {place.booking?.url ?(
                           <Link to={place.booking?.url} style={{textDecoration: 'none',display:'flex'}}>
@@ -273,9 +277,7 @@ const Restaurants = () => {
                       </Link>
                         ): null}
 
-                        {place.phone && (
-                          <Typography>{place.phone}</Typography>
-                        )}                       
+                                             
                    </CardContent>
               </Card>
               </Grid>

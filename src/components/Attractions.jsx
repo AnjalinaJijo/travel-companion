@@ -222,14 +222,14 @@ const Attractions = () => {
                            <Link to={place.web_url} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                 <MenuBookIcon/>
                                 <Typography variant="subtitle1" >
-                                    See WebSite
+                                Check out the website on TripAdvisor
                                 </Typography>
                            </Link>):(null)}
     
                            <Link to={place.write_review} target="_blank" style={{textDecoration: 'none',display:'flex'}}>
                                 <MenuBookIcon/>
                                 <Typography variant="subtitle1" >
-                                    Write Review
+                                    Write Review on TripAdvisor
                                 </Typography>
                            </Link>
     
