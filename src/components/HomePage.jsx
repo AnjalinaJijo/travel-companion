@@ -89,9 +89,9 @@ const HomePage = () => {
               id="search"
               type="search"
               value={region}
-              sx={{ width: '100%',backgroundColor:'white',borderRadius:'5%'}}
+              sx={{ width: '80%',backgroundColor:'white',borderRadius:'5%'}}
               onChange={handleChange}
-              placeholder='Where do you wanna go eg:new york'
+              placeholder='Where eg:new york'
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
